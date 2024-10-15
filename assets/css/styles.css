@@ -77,6 +77,20 @@ button:hover {
     background-color: #218838;
 }
 
+.error-messages {
+    color: red;
+    margin-top: 10px;
+}
+
+.error-messages ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.error-messages li {
+    margin: 5px 0;
+}
+
 @media (max-width: 768px) {
     .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
