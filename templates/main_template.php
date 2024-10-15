@@ -13,6 +13,7 @@
     <!-- PhotoSwipe layout HTML structure -->
     <div class="gallery-container">
         <h1>Photo Gallery</h1>
+        <?php include_once('common/form.php'); ?>
         <?php include_once('layouts/grid_layout.php'); ?>
     </div>
     <!-- PhotoSwipe slider HTML structure -->
