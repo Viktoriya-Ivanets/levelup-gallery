@@ -15,9 +15,7 @@ function getImages(string $directory = 'assets/images'): array
 
         foreach ($files as $file) {
             if ($file != '.' && $file != '..') {
-                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-
-                if (in_array($extension, $allowed_extensions)) {
+                if (in_array(getExtension($file), $allowed_extensions)) {
                     $images[] = [
                         'full' => $directory . '/' . $file,
                         'thumb' => $directory . '/' . $file,
@@ -30,4 +28,29 @@ function getImages(string $directory = 'assets/images'): array
     }
 
     return $images;
+}
+
+/**
+ * Save uploaded images in directory
+ * @param array $files
+ * @param string $directory
+ * @return string[]
+ */
+function uploadImages(array $files, string $directory = '../assets/images'): array
+{
+    $uploadedFiles = [];
+    if (!is_dir($directory)) {
+        mkdir($directory, 0755, true);
+    }
+
+    foreach ($files as $file) {
+        $uniqueName = uniqid('img_', true) . '.' . getExtension($file['name']);
+        $targetFile = $directory . '/' . $uniqueName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+            $uploadedFiles[] = $targetFile;
+        }
+    }
+
+    return $uploadedFiles;
 }
