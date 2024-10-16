@@ -8,27 +8,61 @@
 function validateImages($files): array
 {
     $errors = [];
-    if ($files[0]['error'] === UPLOAD_ERR_NO_FILE) {
-        $errors[] = 'Please choose at least one file for upload';
-        return $errors;
+
+    if (isNoFileError($files)) {
+        return ['Please choose at least one file for upload'];
     }
 
-    if (count($files) > MAX_FILES_ALLOWED) {
-        $errors[] =  'No more than 10 files allowed to upload';
-        return $errors;
+    if (isFileLimitExceeded($files)) {
+        return ['No more than 10 files allowed to upload'];
     }
 
     foreach ($files as $file) {
-        $extensionError = checkExtension($file['name'], ALLOWED_EXTENSIONS);
-        if ($extensionError) {
-            $errors[] = $extensionError;
-        }
-
-        $sizeError = checkSize($file, MAX_FILE_SIZE);
-        if ($sizeError) {
-            $errors[] = $sizeError;
-        }
+        $errors = array_merge($errors, validateFile($file));
     }
+
+    return $errors;
+}
+
+/**
+ * Check if at least one file was uploaded
+ * @param array $files
+ * @return bool
+ */
+function isNoFileError(array $files): bool
+{
+    return $files[0]['error'] === UPLOAD_ERR_NO_FILE;
+}
+
+/**
+ * Control number of uploaded files
+ * @param array $files
+ * @return bool
+ */
+function isFileLimitExceeded(array $files): bool
+{
+    return count($files) > MAX_FILES_ALLOWED;
+}
+
+/**
+ * Validate uploaded file
+ * @param array $file
+ * @return array
+ */
+function validateFile(array $file): array
+{
+    $errors = [];
+
+    $extensionError = checkExtension($file['name'], ALLOWED_EXTENSIONS);
+    if ($extensionError) {
+        $errors[] = $extensionError;
+    }
+
+    $sizeError = checkSize($file, MAX_FILE_SIZE);
+    if ($sizeError) {
+        $errors[] = $sizeError;
+    }
+
     return $errors;
 }
 
@@ -51,7 +85,7 @@ function checkExtension(string $file, array $allowed_extensions): string|null
  * @param string $maxFileSize
  * @return string|null
  */
-function checkSize($file, int $maxFileSize): string|null
+function checkSize(array $file, int $maxFileSize): string|null
 {
     if ($file['size'] > $maxFileSize) {
         return "File " . $file['name'] . "more than max file size - 5 Mb.";
