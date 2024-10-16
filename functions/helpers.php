@@ -49,6 +49,36 @@ function getErrors(): array
 }
 
 /**
+ * Set upload success or error message to session
+ * @param array $uploadedFiles
+ * @return void
+ */
+function setUploadMessages(array $uploadedFiles): void
+{
+    session_start();
+    if (empty($uploadedFiles)) {
+        $_SESSION['upload_info'] = 'Failed to upload images.';
+    } else {
+        $_SESSION['upload_info'] = 'Images uploaded successfully!';
+    }
+}
+
+/**
+ * Get upload message
+ * @return array|null
+ */
+function getUploadMessages(): string|null
+{
+    session_start();
+    if (isset($_SESSION['upload_info'])) {
+        $info = $_SESSION['upload_info'];
+        unset($_SESSION['upload_info']);
+        return $info;
+    }
+    return null;
+}
+
+/**
  * Redirect to the location
  * @return never
  */
