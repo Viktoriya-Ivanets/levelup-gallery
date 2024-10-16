@@ -57,9 +57,9 @@ function setUploadMessages(array $uploadedFiles): void
 {
     session_start();
     if (empty($uploadedFiles)) {
-        $_SESSION['upload_info'] = 'Failed to upload images.';
+        $_SESSION['upload_info'] = UPLOAD_MESSAGES[0]; //See in config.php
     } else {
-        $_SESSION['upload_info'] = 'Images uploaded successfully!';
+        $_SESSION['upload_info'] = UPLOAD_MESSAGES[1]; //See in config.php
     }
 }
 
@@ -82,7 +82,7 @@ function getUploadMessages(): string|null
  * Redirect to the location
  * @return never
  */
-function redirect(string $location): never
+function redirect(string $location = '..' . DIRECTORY_SEPARATOR . 'index.php'): never
 {
     header("Location: " . $location);
     exit();
