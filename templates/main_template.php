@@ -25,6 +25,7 @@
     <?php include_once('common/slider.php'); ?>
     <script src="node_modules/photoswipe/dist/photoswipe-lightbox.esm.js" type="module"></script>
     <script src="assets/js/photoswipe-init.js" type="module"></script>
+    <script src="assets/js/scripts.js"></script>
 </body>
 
 </html>
