@@ -3,22 +3,34 @@
 include_once('config.php');
 
 /**
- * Validate uploaded files. Set errors if exists, else - save photo to directory
+ * Get and validate uploaded files
  * @return void
  */
 function handleUpload(): void
 {
-    $formatedFiles = formatFilesArray($_FILES['file']);
-    $errors = validateImages($formatedFiles);
+    $formattedFiles = formatFilesArray($_FILES['file']);
+    $errors = validateImages($formattedFiles);
 
+    processUploadResult($errors, $formattedFiles);
+}
+
+/**
+ * Save files to the directory or set errors
+ * @param array $errors
+ * @param array $formattedFiles
+ * @return void
+ */
+function processUploadResult(array $errors, array $formattedFiles): void
+{
     if (empty($errors)) {
-        uploadImages($formatedFiles);
-        redirect('../index.php');
+        uploadImages($formattedFiles);
     } else {
         setErrors($errors);
-        redirect('../index.php');
     }
+
+    redirect('../index.php');
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     handleUpload();
