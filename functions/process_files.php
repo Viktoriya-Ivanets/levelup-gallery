@@ -5,12 +5,11 @@
  * @param string $directory
  * @return array
  */
-function getImages(string $directory = 'assets/images'): array
+function getImages(string $directory = DEFAULT_DIR): array
 {
-    $allowedExtensions = ['jpg', 'jpeg', 'png'];
     $files = getFilesFromDirectory($directory);
 
-    return filterImages($files, $allowedExtensions, $directory);
+    return filterImages($files, ALLOWED_EXTENSIONS, $directory);
 }
 
 /**
@@ -52,8 +51,8 @@ function filterImages(array $files, array $allowedExtensions, string $directory)
 function formatImageData(string $file, string $directory): array
 {
     return [
-        'full' => $directory . '/' . $file,
-        'thumb' => $directory . '/' . $file,
+        'full' => $directory . DIRECTORY_SEPARATOR . $file,
+        'thumb' => $directory . DIRECTORY_SEPARATOR . $file,
         'width' => 1200,
         'height' => 700
     ];
@@ -65,7 +64,7 @@ function formatImageData(string $file, string $directory): array
  * @param string $directory
  * @return void
  */
-function uploadImages(array $files, string $directory = '../assets/images'): void
+function uploadImages(array $files, string $directory = '..' . DIRECTORY_SEPARATOR . DEFAULT_DIR): void
 {
     if (!is_dir($directory)) {
         mkdir($directory, 0755, true);
@@ -88,7 +87,7 @@ function processFileUploads(array $files, string $directory): array
 
     foreach ($files as $file) {
         $uniqueName = generateUniqueFileName($file['name']);
-        $targetFile = $directory . '/' . $uniqueName;
+        $targetFile = $directory . DIRECTORY_SEPARATOR . $uniqueName;
 
         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
             $uploadedFiles[] = $targetFile;
