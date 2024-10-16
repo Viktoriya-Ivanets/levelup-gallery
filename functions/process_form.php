@@ -28,7 +28,7 @@ function processUploadResult(array $errors, array $formattedFiles): void
         setErrors($errors);
     }
 
-    redirect('../index.php');
+    redirect(); // To index.php
 }
 
 
