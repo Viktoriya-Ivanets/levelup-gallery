@@ -10,11 +10,11 @@ function validateImages($files): array
     $errors = [];
 
     if (isNoFileError($files)) {
-        return ['Please choose at least one file for upload'];
+        return [ERROR_MESSAGES[0]]; //See in config.php
     }
 
     if (isFileLimitExceeded($files)) {
-        return ['No more than 10 files allowed to upload'];
+        return [ERROR_MESSAGES[1]]; //See in config.php
     }
 
     foreach ($files as $file) {
@@ -75,7 +75,7 @@ function validateFile(array $file): array
 function checkExtension(string $file, array $allowed_extensions): string|null
 {
     if (!in_array(getExtension($file), $allowed_extensions)) {
-        return "File " . $file . " has incorrect format. Allowed formats: jpg, jpeg, png.";
+        return "File " . $file . ERROR_MESSAGES[2]; //See in config.php
     }
     return null;
 }
@@ -88,7 +88,7 @@ function checkExtension(string $file, array $allowed_extensions): string|null
 function checkSize(array $file, int $maxFileSize): string|null
 {
     if ($file['size'] > $maxFileSize) {
-        return "File " . $file['name'] . "more than max file size - 5 Mb.";
+        return "File " . $file['name'] . ERROR_MESSAGES[3]; //See in config.php
     }
     return null;
 }
