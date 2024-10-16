@@ -12,6 +12,11 @@
 <body>
     <!-- PhotoSwipe layout HTML structure -->
     <div class="gallery-container">
+        <?php if (!empty($uploadInfo)): ?>
+            <div class="upload-messages">
+                <p><?= htmlspecialchars($uploadInfo); ?></p>
+            </div>
+        <?php endif; ?>
         <h1>Photo Gallery</h1>
         <?php include_once('common/form.php'); ?>
         <?php include_once('layouts/grid_layout.php'); ?>
