@@ -1,9 +1,9 @@
 <?php
 
-include_once('functions/config.php');
+include_once('functions/bootstrap.php');
 
 $images = getImages();
 $errors = getErrors();
 $uploadInfo = getUploadMessages();
 
-include_once('templates/main_template.php');
+include_once('views/templates/main_template.php');
