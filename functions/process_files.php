@@ -51,8 +51,7 @@ function filterImages(array $files, array $allowedExtensions, string $directory)
 function formatImageData(string $file, string $directory): array
 {
     return [
-        'full' => $directory . DIRECTORY_SEPARATOR . $file,
-        'thumb' => $directory . DIRECTORY_SEPARATOR . $file,
+        'img' => $directory . DIRECTORY_SEPARATOR . $file,
         'width' => 1200,
         'height' => 700
     ];
