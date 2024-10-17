@@ -23,6 +23,25 @@ function formatFilesArray($files): array
 }
 
 /**
+ * Convert a two-dimensional array into a one-dimensional array if needed
+ * @param array $errors
+ * @return array
+ */
+function formatErrorsArray(array $errors): array
+{
+    if ($errors[0] == ERROR_MESSAGES[0] || $errors[0] == ERROR_MESSAGES[1]) {
+        return $errors;
+    }
+    $formattedErrors = [];
+    foreach ($errors as $fileErrors) {
+        foreach ($fileErrors as $errorMessage) {
+            $formattedErrors[] = $errorMessage;
+        }
+    }
+    return $formattedErrors;
+}
+
+/**
  * Sets errors in the session.
  *
  * @param array $errors An array of errors to be recorded.
@@ -32,6 +51,7 @@ function setErrors(array $errors): void
     session_start();
     $_SESSION['errors'] = $errors;
 }
+
 /**
  * Get errors from the session.
  *
@@ -59,7 +79,7 @@ function setUploadMessages(array $uploadedFiles): void
     if (empty($uploadedFiles)) {
         $_SESSION['upload_info'] = UPLOAD_MESSAGES[0]; //See in config.php
     } else {
-        $_SESSION['upload_info'] = UPLOAD_MESSAGES[1]; //See in config.php
+        $_SESSION['upload_info'] = count($uploadedFiles) . UPLOAD_MESSAGES[1]; //See in config.php
     }
 }
 
