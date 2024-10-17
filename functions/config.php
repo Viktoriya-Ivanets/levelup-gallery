@@ -11,5 +11,5 @@ const ERROR_MESSAGES = [
 ];
 const UPLOAD_MESSAGES = [
     0 => 'Failed to upload images.',
-    1 => 'Images uploaded successfully!'
+    1 => ' images uploaded successfully!'
 ];
