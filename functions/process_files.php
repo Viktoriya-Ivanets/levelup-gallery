@@ -7,9 +7,7 @@
  */
 function getImages(string $directory = DEFAULT_DIR): array
 {
-    $files = getFilesFromDirectory($directory);
-
-    return filterImages($files, ALLOWED_EXTENSIONS, $directory);
+    return filterImages(getFilesFromDirectory($directory), ALLOWED_EXTENSIONS, $directory);
 }
 
 /**
@@ -31,15 +29,12 @@ function getFilesFromDirectory(string $directory): array
  */
 function filterImages(array $files, array $allowedExtensions, string $directory): array
 {
-    $images = [];
-
-    foreach ($files as $file) {
+    return array_reduce($files, function ($images, $file) use ($allowedExtensions, $directory) {
         if (!checkExtension($file, $allowedExtensions)) {
             $images[] = formatImageData($file, $directory);
         }
-    }
-
-    return $images;
+        return $images;
+    }, []);
 }
 
 /**
@@ -69,9 +64,7 @@ function uploadImages(array $files, string $directory = '..' . DIRECTORY_SEPARAT
         mkdir($directory, 0755, true);
     }
 
-    $uploadedFiles = processFileUploads($files, $directory);
-
-    setUploadMessages($uploadedFiles);
+    setUploadMessages(processFileUploads($files, $directory));
 }
 
 /**
@@ -82,18 +75,12 @@ function uploadImages(array $files, string $directory = '..' . DIRECTORY_SEPARAT
  */
 function processFileUploads(array $files, string $directory): array
 {
-    $uploadedFiles = [];
-
-    foreach ($files as $file) {
+    return array_filter($files, function ($file) use ($directory) {
         $uniqueName = generateUniqueFileName($file['name']);
         $targetFile = $directory . DIRECTORY_SEPARATOR . $uniqueName;
 
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            $uploadedFiles[] = $targetFile;
-        }
-    }
-
-    return $uploadedFiles;
+        return move_uploaded_file($file['tmp_name'], $targetFile) ? $targetFile : false;
+    });
 }
 
 /**
