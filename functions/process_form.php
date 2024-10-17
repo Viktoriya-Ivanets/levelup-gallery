@@ -10,27 +10,35 @@ function handleUpload(): void
 {
     $formattedFiles = formatFilesArray($_FILES['file']);
     $errors = validateImages($formattedFiles);
+    error_log(print_r($errors, true));
+    $validFiles = [];
 
-    processUploadResult($errors, $formattedFiles);
+    foreach ($formattedFiles as $file) {
+        if (empty($errors[$file['name']])) {
+            $validFiles[] = $file;
+        }
+    }
+
+    processUploadResult($validFiles, $errors);
 }
 
 /**
  * Save files to the directory or set errors
- * @param array $errors
- * @param array $formattedFiles
+ * @param array $validFiles
+ * @param array $invalidFiles
  * @return void
  */
-function processUploadResult(array $errors, array $formattedFiles): void
+function processUploadResult(array $validFiles, array $errors): void
 {
-    if (empty($errors)) {
-        uploadImages($formattedFiles);
-    } else {
-        setErrors($errors);
+    if ($errors[0] != ERROR_MESSAGES[0] && $errors[0] != ERROR_MESSAGES[1] && !empty($validFiles)) {
+        uploadImages($validFiles);
+    }
+    if (!empty($errors)) {
+        setErrors(formatErrorsArray($errors));
     }
 
     redirect(); // To index.php
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     handleUpload();
