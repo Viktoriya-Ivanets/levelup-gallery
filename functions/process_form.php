@@ -8,16 +8,12 @@ include_once('bootstrap.php');
  */
 function handleUpload(): void
 {
-    $formattedFiles = formatFilesArray($_FILES['file']);
-    $errors = validateImages($formattedFiles);
-    error_log(print_r($errors, true));
-    $validFiles = [];
+    $files = formatFilesArray($_FILES['file']);
+    $errors = validateImages($files);
 
-    foreach ($formattedFiles as $file) {
-        if (empty($errors[$file['name']])) {
-            $validFiles[] = $file;
-        }
-    }
+    $validFiles = array_filter($files, function ($file) use ($errors) {
+        return empty($errors[$file['name']]);
+    });
 
     processUploadResult($validFiles, $errors);
 }
@@ -25,14 +21,15 @@ function handleUpload(): void
 /**
  * Save files to the directory or set errors
  * @param array $validFiles
- * @param array $invalidFiles
+ * @param array $errors
  * @return void
  */
 function processUploadResult(array $validFiles, array $errors): void
 {
-    if ($errors[0] != ERROR_MESSAGES[0] && $errors[0] != ERROR_MESSAGES[1] && !empty($validFiles)) {
+    if (!empty($validFiles) && !in_array($errors[0], [ERROR_MESSAGES[0], ERROR_MESSAGES[1]], true)) {
         uploadImages($validFiles);
     }
+
     if (!empty($errors)) {
         setErrors(formatErrorsArray($errors));
     }
@@ -40,6 +37,6 @@ function processUploadResult(array $validFiles, array $errors): void
     redirect(); // To index.php
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     handleUpload();
 }
