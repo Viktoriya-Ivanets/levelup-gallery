@@ -17,11 +17,7 @@ function validateImages(array $files): array
         return [ERROR_MESSAGES[1]]; // See in config.php
     }
 
-    foreach ($files as $file) {
-        $errors[$file['name']] = validateFile($file);
-    }
-
-    return $errors;
+    return array_map('validateFile', array_column($files, null, 'name'));
 }
 
 /**
@@ -72,10 +68,7 @@ function validateFile(array $file): array
  */
 function checkExtension(string $file, array $allowed_extensions): string|null
 {
-    if (!in_array(getExtension($file), $allowed_extensions)) {
-        return $file . ERROR_MESSAGES[2]; // See in config.php
-    }
-    return null;
+    return in_array(getExtension($file), $allowed_extensions) ? null : $file . ERROR_MESSAGES[2]; // See in config.php
 }
 
 /**
@@ -86,8 +79,5 @@ function checkExtension(string $file, array $allowed_extensions): string|null
  */
 function checkSize(array $file, int $maxFileSize): string|null
 {
-    if ($file['size'] > $maxFileSize) {
-        return $file . ERROR_MESSAGES[3]; // See in config.php
-    }
-    return null;
+    return $file['size'] > $maxFileSize ? $file . ERROR_MESSAGES[3] : null; // See in config.php
 }
