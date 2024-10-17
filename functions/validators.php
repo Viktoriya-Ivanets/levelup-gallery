@@ -2,23 +2,23 @@
 
 /**
  * Collect all possible errors due to uploaded files
- * @param mixed $files
- * @return string|string[]
+ * @param array $files
+ * @return array
  */
-function validateImages($files): array
+function validateImages(array $files): array
 {
     $errors = [];
 
     if (isNoFileError($files)) {
-        return [ERROR_MESSAGES[0]]; //See in config.php
+        return [ERROR_MESSAGES[0]]; // See in config.php
     }
 
     if (isFileLimitExceeded($files)) {
-        return [ERROR_MESSAGES[1]]; //See in config.php
+        return [ERROR_MESSAGES[1]]; // See in config.php
     }
 
     foreach ($files as $file) {
-        $errors = array_merge($errors, validateFile($file));
+        $errors[$file['name']] = validateFile($file);
     }
 
     return $errors;
@@ -53,13 +53,11 @@ function validateFile(array $file): array
 {
     $errors = [];
 
-    $extensionError = checkExtension($file['name'], ALLOWED_EXTENSIONS);
-    if ($extensionError) {
+    if ($extensionError = checkExtension($file['name'], ALLOWED_EXTENSIONS)) {
         $errors[] = $extensionError;
     }
 
-    $sizeError = checkSize($file, MAX_FILE_SIZE);
-    if ($sizeError) {
+    if ($sizeError = checkSize($file, MAX_FILE_SIZE)) {
         $errors[] = $sizeError;
     }
 
@@ -75,10 +73,11 @@ function validateFile(array $file): array
 function checkExtension(string $file, array $allowed_extensions): string|null
 {
     if (!in_array(getExtension($file), $allowed_extensions)) {
-        return "File " . $file . ERROR_MESSAGES[2]; //See in config.php
+        return $file . ERROR_MESSAGES[2]; // See in config.php
     }
     return null;
 }
+
 /**
  * Check size of the file
  * @param array $file
@@ -88,7 +87,7 @@ function checkExtension(string $file, array $allowed_extensions): string|null
 function checkSize(array $file, int $maxFileSize): string|null
 {
     if ($file['size'] > $maxFileSize) {
-        return "File " . $file['name'] . ERROR_MESSAGES[3]; //See in config.php
+        return $file . ERROR_MESSAGES[3]; // See in config.php
     }
     return null;
 }
