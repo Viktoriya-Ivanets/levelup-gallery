@@ -2,24 +2,20 @@
 
 /**
  * Format $_FILES
- * @param mixed $files
+ * @param array $files
  * @return array
  */
-function formatFilesArray($files): array
+function formatFilesArray(array $files): array
 {
-    $formattedFiles = [];
-
-    foreach ($files['name'] as $key => $name) {
-        $formattedFiles[] = [
-            'name' => $name,
+    return array_map(function ($key) use ($files) {
+        return [
+            'name' => $files['name'][$key],
             'type' => $files['type'][$key],
             'tmp_name' => $files['tmp_name'][$key],
             'error' => $files['error'][$key],
             'size' => $files['size'][$key]
         ];
-    }
-
-    return $formattedFiles;
+    }, array_keys($files['name']));
 }
 
 /**
@@ -29,17 +25,17 @@ function formatFilesArray($files): array
  */
 function formatErrorsArray(array $errors): array
 {
-    if ($errors[0] == ERROR_MESSAGES[0] || $errors[0] == ERROR_MESSAGES[1]) {
+    if (in_array($errors[0], [ERROR_MESSAGES[0], ERROR_MESSAGES[1]])) {
         return $errors;
     }
-    $formattedErrors = [];
-    foreach ($errors as $fileErrors) {
-        foreach ($fileErrors as $errorMessage) {
-            $formattedErrors[] = $errorMessage;
-        }
-    }
+
+    $formattedErrors = array_reduce($errors, function ($carry, $fileErrors) {
+        return array_merge($carry, $fileErrors);
+    }, []);
+
     return $formattedErrors;
 }
+
 
 /**
  * Sets errors in the session.
